@@ -11,7 +11,6 @@ import ru.itis.longpolling.model.User;
 import ru.itis.longpolling.repository.UserRepository;
 import ru.itis.longpolling.security.JwtTokenHelper;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Service
@@ -31,44 +30,44 @@ public class UserServiceImpl implements UserService {
         this.authenticationManager = authenticationManager;
     }
 
-    public String signin(String username, String password) {
+    public String signin(String login, String password) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            Optional<User> user = userRepository.findByUsername(username);
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(login, password));
+            Optional<User> user = userRepository.findByLogin(login);
             if (user.isEmpty()) {
                 throw new CustomException("User is not found", HttpStatus.BAD_REQUEST);
             }
-            return jwtTokenHelper.createToken(username, user.get().getRoles());
+            return jwtTokenHelper.createToken(login, user.get().getRoles());
         } catch (AuthenticationException e) {
             throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
     public String signup(User user) {
-        if (!userRepository.existsByUsername(user.getUsername())) {
+        if (!userRepository.existsByLogin(user.getLogin())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
-            return jwtTokenHelper.createToken(user.getUsername(), user.getRoles());
+            return jwtTokenHelper.createToken(user.getLogin(), user.getRoles());
         } else {
             throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
-    public void delete(String username) {
-        userRepository.deleteByUsername(username);
+    public void delete(String login) {
+        userRepository.deleteByLogin(login);
     }
 
-    public String refresh(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
+    public String refresh(String login) {
+        Optional<User> user = userRepository.findByLogin(login);
         if (user.isEmpty()) {
             throw new CustomException("User is not found", HttpStatus.BAD_REQUEST);
         }
-        return jwtTokenHelper.createToken(username, user.get().getRoles());
+        return jwtTokenHelper.createToken(login, user.get().getRoles());
     }
 
     @Override
-    public User getUserByUsername(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
+    public User getUserByLogin(String login) {
+        Optional<User> user = userRepository.findByLogin(login);
         if (user.isEmpty()) {
             throw new CustomException("User is not found", HttpStatus.BAD_REQUEST);
         }

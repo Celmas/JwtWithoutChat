@@ -3,6 +3,7 @@ package ru.itis.longpolling.controller;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.itis.longpolling.dto.LoginDto;
 import ru.itis.longpolling.dto.RegisterDto;
 import ru.itis.longpolling.model.User;
 import ru.itis.longpolling.service.UserService;
@@ -10,7 +11,6 @@ import ru.itis.longpolling.service.UserService;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
 
   private final UserService userService;
@@ -22,12 +22,12 @@ public class UserController {
     this.modelMapper = modelMapper;
   }
 
-  @PostMapping("/signin")
-  public String login(@RequestParam String username, @RequestParam String password) {
-    return userService.signin(username, password);
+  @PostMapping("/login")
+  public String login(@RequestBody LoginDto loginDto) {
+    return userService.signin(loginDto.getLogin(), loginDto.getPassword());
   }
 
-  @PostMapping("/signup")
+  @PostMapping("/register")
   public String signup(@RequestBody RegisterDto user) {
     return userService.signup(modelMapper.map(user, User.class));
   }

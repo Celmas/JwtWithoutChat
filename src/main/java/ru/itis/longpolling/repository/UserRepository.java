@@ -7,10 +7,10 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    boolean existsByUsername(String username);
+    boolean existsByLogin(String login);
 
-    Optional<User> findByUsername(String username);
+    Optional<User> findByLogin(String login);
 
     @Transactional
-    void deleteByUsername(String username);
+    void deleteByLogin(String login);
 }

@@ -6,9 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 public interface UserService {
-    String signin(String username, String password);
+    String signin(String login, String password);
     String signup(User user);
-    void delete(String username);
-    String refresh(String username);
-    User getUserByUsername(String username);
+    void delete(String login);
+    String refresh(String login);
+    User getUserByLogin(String login);
 }

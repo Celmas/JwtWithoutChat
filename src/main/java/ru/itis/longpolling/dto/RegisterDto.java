@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class RegisterDto {
-    private String username;
+    private String login;
     private String email;
     private String password;
     List<Role> roles;

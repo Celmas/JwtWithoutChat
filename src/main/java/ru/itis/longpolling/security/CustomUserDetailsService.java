@@ -1,6 +1,5 @@
 package ru.itis.longpolling.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,20 +14,23 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
+    private final JwtTokenHelper tokenHelper;
+
+    public CustomUserDetailsService(UserRepository userRepository, JwtTokenHelper tokenHelper) {
         this.userRepository = userRepository;
+        this.tokenHelper = tokenHelper;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final Optional<User> user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        final Optional<User> user = userRepository.findByLogin(login);
 
         if (user.isEmpty()) {
-            throw new UsernameNotFoundException("User '" + username + "' not found");
+            throw new UsernameNotFoundException("User '" + login + "' not found");
         }
 
         return org.springframework.security.core.userdetails.User
-                .withUsername(username)
+                .withUsername(login)
                 .password(user.get().getPassword())
                 .authorities(user.get().getRoles())
                 .accountExpired(false)

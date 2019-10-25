@@ -25,7 +25,7 @@ public class User {
 
     @Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
     @Column(unique = true, nullable = false)
-    private String username;
+    private String login;
 
     @Column(unique = true, nullable = false)
     private String email;
